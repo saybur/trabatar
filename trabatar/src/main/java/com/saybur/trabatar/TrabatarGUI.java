@@ -76,6 +76,7 @@ public final class TrabatarGUI extends JFrame
 		
 		// set basic parameters
 		setTitle(String.format(TITLE_FORMAT, parent.getDestination()));
+		setResizable(false);
 		
 		// attempt to use the standard icon for the frame
 		try
