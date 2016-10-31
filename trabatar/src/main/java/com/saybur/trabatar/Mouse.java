@@ -58,11 +58,7 @@ public class Mouse implements MouseListener, MouseMotionListener
 		
 		// only send data if the mouse didn't escape the
 		// last time around
-		if (mouseEscaping)
-		{
-			mouseEscaping = false;
-		}
-		else
+		if (! mouseEscaping)
 		{
 			movementData(x, lastX, false);
 			movementData(y, lastY, true);
@@ -121,6 +117,10 @@ public class Mouse implements MouseListener, MouseMotionListener
 			// recapture
 			parent.commandCapture();
 		}
+		
+		mouseEscaping = false;
+		lastX = evt.getX();
+		lastY = evt.getY();
 	}
 	
 	@Override
