@@ -59,7 +59,7 @@ public final class TrabatarGUI extends JFrame
 	}
 	
 	private static final long serialVersionUID = -43242356441676430L;
-	private static final String TITLE_FORMAT = "Trabatar <%s>";
+	private static final String TITLE_FORMAT = "Trabatar";
 	private static final String ICON_PATH =
 			"com/saybur/trabatar/icon.png";
 	private static final String BACKGROUND_PATH =
@@ -75,7 +75,7 @@ public final class TrabatarGUI extends JFrame
 		Objects.requireNonNull(parent);
 		
 		// set basic parameters
-		setTitle(String.format(TITLE_FORMAT, parent.getDestination()));
+		setTitle(String.format(TITLE_FORMAT));
 		setResizable(false);
 		
 		// attempt to use the standard icon for the frame
