@@ -1,0 +1,251 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr USLetter 11000 8500
+encoding utf-8
+Sheet 1 1
+Title "trabatar-shield"
+Date ""
+Rev "v01"
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MCU_Module:Arduino_Nano_v3.x A1
+U 1 1 60E8E002
+P 4000 3800
+F 0 "A1" H 3650 4800 50  0000 C CNN
+F 1 "Arduino_Nano_v3.x" V 4000 3800 50  0000 C CNN
+F 2 "Module:Arduino_Nano" H 4000 3800 50  0001 C CIN
+F 3 "http://www.mouser.com/pdfdocs/Gravitech_Arduino_Nano3_0.pdf" H 4000 3800 50  0001 C CNN
+	1    4000 3800
+	-1   0    0    -1  
+$EndComp
+NoConn ~ 4100 2800
+NoConn ~ 3900 2800
+$Comp
+L power:GND #PWR0101
+U 1 1 60E8E681
+P 4000 5000
+F 0 "#PWR0101" H 4000 4750 50  0001 C CNN
+F 1 "GND" H 4005 4827 50  0000 C CNN
+F 2 "" H 4000 5000 50  0001 C CNN
+F 3 "" H 4000 5000 50  0001 C CNN
+	1    4000 5000
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	4000 4800 4000 4900
+Wire Wire Line
+	4000 4900 3900 4900
+Wire Wire Line
+	3900 4900 3900 4800
+Wire Wire Line
+	4000 4900 4000 5000
+Connection ~ 4000 4900
+NoConn ~ 3500 3200
+NoConn ~ 3500 3300
+NoConn ~ 3500 3600
+NoConn ~ 3500 3900
+NoConn ~ 3500 4000
+NoConn ~ 3500 4100
+NoConn ~ 3500 4200
+NoConn ~ 3500 4300
+NoConn ~ 3500 4400
+NoConn ~ 3500 4500
+NoConn ~ 4500 3200
+NoConn ~ 4500 3300
+$Comp
+L Connector:Mini-DIN-4 J1
+U 1 1 60E90556
+P 6800 3500
+F 0 "J1" H 6800 3867 50  0000 C CNN
+F 1 "Mini-DIN-4" H 6800 3776 50  0000 C CNN
+F 2 "shield:5749181-1" H 6800 3500 50  0001 C CNN
+F 3 "http://service.powerdynamics.com/ec/Catalog17/Section%2011.pdf" H 6800 3500 50  0001 C CNN
+	1    6800 3500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6500 3400 6400 3400
+Wire Wire Line
+	6400 3400 6400 3600
+Wire Wire Line
+	7100 3400 7200 3400
+Wire Wire Line
+	7200 3400 7200 3000
+Wire Wire Line
+	7100 3500 7200 3500
+$Comp
+L Device:R R2
+U 1 1 60EA4BEC
+P 6000 3250
+F 0 "R2" V 5900 3250 50  0000 C CNN
+F 1 "4K7" V 6000 3250 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5930 3250 50  0001 C CNN
+F 3 "~" H 6000 3250 50  0001 C CNN
+	1    6000 3250
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R3
+U 1 1 60EA355F
+P 4950 2300
+F 0 "R3" V 4850 2300 50  0000 C CNN
+F 1 "4K7" V 4950 2300 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 4880 2300 50  0001 C CNN
+F 3 "~" H 4950 2300 50  0001 C CNN
+	1    4950 2300
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7200 3500 7200 4000
+$Comp
+L power:GND #PWR0102
+U 1 1 60EBA3E8
+P 6400 3600
+F 0 "#PWR0102" H 6400 3350 50  0001 C CNN
+F 1 "GND" H 6405 3427 50  0000 C CNN
+F 2 "" H 6400 3600 50  0001 C CNN
+F 3 "" H 6400 3600 50  0001 C CNN
+	1    6400 3600
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	7200 4000 6000 4000
+Wire Wire Line
+	7200 3000 6000 3000
+Wire Wire Line
+	6000 3000 6000 3100
+Wire Wire Line
+	6500 3500 6300 3500
+Wire Wire Line
+	6300 3500 6300 2000
+Wire Wire Line
+	6300 2000 5500 2000
+Wire Wire Line
+	5500 2000 5500 2100
+Wire Wire Line
+	5500 2500 5500 2600
+$Comp
+L power:GND #PWR0103
+U 1 1 60EC1148
+P 5500 2600
+F 0 "#PWR0103" H 5500 2350 50  0001 C CNN
+F 1 "GND" H 5505 2427 50  0000 C CNN
+F 2 "" H 5500 2600 50  0001 C CNN
+F 3 "" H 5500 2600 50  0001 C CNN
+	1    5500 2600
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	5100 2300 5200 2300
+$Comp
+L Device:R R4
+U 1 1 60EC3C90
+P 6000 4250
+F 0 "R4" V 5900 4250 50  0000 C CNN
+F 1 "100K" V 6000 4250 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 5930 4250 50  0001 C CNN
+F 3 "~" H 6000 4250 50  0001 C CNN
+	1    6000 4250
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6000 4000 6000 4100
+Connection ~ 6000 4000
+Wire Wire Line
+	6000 4400 6000 4600
+$Comp
+L power:GND #PWR0105
+U 1 1 60EC7A3B
+P 6000 4600
+F 0 "#PWR0105" H 6000 4350 50  0001 C CNN
+F 1 "GND" H 6005 4427 50  0000 C CNN
+F 2 "" H 6000 4600 50  0001 C CNN
+F 3 "" H 6000 4600 50  0001 C CNN
+	1    6000 4600
+	-1   0    0    -1  
+$EndComp
+NoConn ~ 4500 3600
+NoConn ~ 4500 3700
+NoConn ~ 4500 3800
+NoConn ~ 4500 3900
+NoConn ~ 4500 4200
+NoConn ~ 4500 4300
+NoConn ~ 4500 4500
+NoConn ~ 3800 2800
+Wire Wire Line
+	6000 3400 6000 4000
+NoConn ~ 4500 4400
+Wire Wire Line
+	6000 4000 5500 4000
+$Comp
+L Device:R R1
+U 1 1 60E9F7AB
+P 4950 4300
+F 0 "R1" V 4850 4300 50  0000 C CNN
+F 1 "4K7" V 4950 4300 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 4880 4300 50  0001 C CNN
+F 3 "~" H 4950 4300 50  0001 C CNN
+	1    4950 4300
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5500 4000 5500 4100
+Connection ~ 5500 4000
+Wire Wire Line
+	5500 4000 4500 4000
+Wire Wire Line
+	5500 4500 5500 4600
+$Comp
+L power:GND #PWR0104
+U 1 1 60EA0DBC
+P 5500 4600
+F 0 "#PWR0104" H 5500 4350 50  0001 C CNN
+F 1 "GND" H 5505 4427 50  0000 C CNN
+F 2 "" H 5500 4600 50  0001 C CNN
+F 3 "" H 5500 4600 50  0001 C CNN
+	1    5500 4600
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	5100 4300 5200 4300
+Wire Wire Line
+	4800 4300 4700 4300
+Wire Wire Line
+	4700 4300 4700 4100
+Wire Wire Line
+	4700 4100 4500 4100
+Wire Wire Line
+	4800 2300 3000 2300
+Wire Wire Line
+	3000 2300 3000 3800
+Wire Wire Line
+	3000 3800 3500 3800
+$Comp
+L Transistor_BJT:2N3904 Q2
+U 1 1 60E9E8FC
+P 5400 2300
+F 0 "Q2" H 5590 2346 50  0000 L CNN
+F 1 "2N3904" H 5590 2255 50  0000 L CNN
+F 2 "Package_TO_SOT_THT:TO-92_Inline_Wide" H 5600 2225 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 5400 2300 50  0001 L CNN
+	1    5400 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Transistor_BJT:2N3904 Q1
+U 1 1 60E9EC25
+P 5400 4300
+F 0 "Q1" H 5590 4346 50  0000 L CNN
+F 1 "2N3904" H 5590 4255 50  0000 L CNN
+F 2 "Package_TO_SOT_THT:TO-92_Inline_Wide" H 5600 4225 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 5400 4300 50  0001 L CNN
+	1    5400 4300
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
