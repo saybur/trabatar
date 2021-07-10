@@ -35,20 +35,17 @@ import org.slf4j.LoggerFactory;
  */
 public final class Keyboard implements KeyListener
 {
-	private static final int RELEASE_KEY = KeyEvent.VK_SHIFT;
-	private static final int RELEASE_COUNT = 5;
+	private static final int RELEASE_KEY = KeyEvent.VK_CONTROL;
+	private static final int RELEASE_SIDE = KeyEvent.KEY_LOCATION_RIGHT;
 	
 	private final Logger log = LoggerFactory.getLogger(Keyboard.class);
 	private final Trabatar parent;
 	private final Keymap keymap;
-	
-	private int releaseTracker;
-	
+
 	Keyboard(Trabatar parent)
 	{
 		this.parent = Objects.requireNonNull(parent);
 		keymap = new Keymap();
-		releaseTracker = 0;
 	}
 	
 	@Override
@@ -58,7 +55,14 @@ public final class Keyboard implements KeyListener
 		{
 			return;
 		}
-		
+
+		if(evt.getKeyCode() == RELEASE_KEY
+				&& evt.getKeyLocation() == RELEASE_SIDE)
+		{
+			// only handle on release
+			return;
+		}
+
 		Optional<Keycode> key = keymap.get(evt.getKeyCode());
 		if(log.isTraceEnabled())
 		{
@@ -82,7 +86,14 @@ public final class Keyboard implements KeyListener
 		{
 			return;
 		}
-		
+
+		if(evt.getKeyCode() == RELEASE_KEY
+				&& evt.getKeyLocation() == RELEASE_SIDE)
+		{
+			parent.commandRelease();
+			return;
+		}
+
 		Optional<Keycode> key = keymap.get(evt.getKeyCode());
 		if(log.isTraceEnabled())
 		{
@@ -96,24 +107,6 @@ public final class Keyboard implements KeyListener
 			int kc = key.get().getCode();
 			parent.sendData(0x40 + (kc & 0x0F));
 			parent.sendData(0x58 + ((kc & 0xF0) >> 4));
-		}
-		
-		/*
-		 * Track the number of times the user presses the release key. When that
-		 * exceeds the release count, then we stop operations.
-		 */
-		if(evt.getKeyCode() == RELEASE_KEY)
-		{
-			releaseTracker++;
-		}
-		else
-		{
-			releaseTracker = 0;
-		}
-		if(releaseTracker >= RELEASE_COUNT)
-		{
-			releaseTracker = 0;
-			parent.commandRelease();
 		}
 	}
 

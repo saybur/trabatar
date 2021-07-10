@@ -48,7 +48,7 @@ public class Trabatar
 	// messages displayed to the user
 	public static final String STR_CANT_OPEN = "Can't open destination stream";
 	public static final String STR_WAIT_CAPTURE = "Click to start...";
-	public static final String STR_TRANSMITTING = "Transmitting... (SHIFT 5x to escape)";
+	public static final String STR_TRANSMITTING = "Transmitting... (RIGHT-CTRL to escape)";
 	public static final String STR_ERROR = "Data send failed!";
 	public static final String STR_NOT_CONNECTED = "Not connected";
 
