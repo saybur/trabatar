@@ -30,6 +30,9 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -101,6 +104,19 @@ public final class TrabatarGUI extends JFrame
 			}
 		});
 
+		// make the menu items and bar, then add it to the frame
+		final JMenuItem connectItem = new JMenuItem("Connect...");
+		connectItem.addActionListener(evt -> parent.commandOpen());
+		final JMenuItem exitItem = new JMenuItem("Exit");
+		exitItem.addActionListener(evt -> parent.commandExit());
+		final JMenu fileMenu = new JMenu("File");
+		fileMenu.add(connectItem);
+		fileMenu.addSeparator();
+		fileMenu.add(exitItem);
+		final JMenuBar menuBar = new JMenuBar();
+		menuBar.add(fileMenu);
+		setJMenuBar(menuBar);
+
 		// make the component that the mouse is trapped within
 		final JLabel core = new JLabel();
 		core.setPreferredSize(BACKGROUND_SIZE);
@@ -125,7 +141,7 @@ public final class TrabatarGUI extends JFrame
 				.createEmptyBorder(10, 10, 10, 10));
 		messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		messageLabel.setOpaque(true);
-		showMessage("Initializing...", Status.WAITING);
+		showMessage(Trabatar.STR_NOT_CONNECTED, Status.WAITING);
 		
 		// then pull the GUI together
 		final JPanel content = new JPanel(new BorderLayout());

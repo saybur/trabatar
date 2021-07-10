@@ -95,7 +95,10 @@ public class Mouse implements MouseListener, MouseMotionListener
 	@Override
 	public void mouseClicked(MouseEvent evt)
 	{
-		// ignore, we do this via press/release
+		if(! parent.isActive())
+		{
+			parent.commandCapture();
+		}
 	}
 
 	@Override
@@ -112,12 +115,6 @@ public class Mouse implements MouseListener, MouseMotionListener
 	@Override
 	public void mouseEntered(MouseEvent evt)
 	{
-		if(! parent.isActive())
-		{
-			// recapture
-			parent.commandCapture();
-		}
-		
 		mouseEscaping = false;
 		lastX = evt.getX();
 		lastY = evt.getY();

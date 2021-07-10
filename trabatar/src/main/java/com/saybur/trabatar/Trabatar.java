@@ -23,13 +23,8 @@ import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Robot;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.Objects;
+import java.util.Arrays;
+import java.util.Optional;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -37,6 +32,7 @@ import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fazecast.jSerialComm.SerialPort;
 import com.saybur.trabatar.TrabatarGUI.Status;
 
 /**
@@ -50,10 +46,11 @@ import com.saybur.trabatar.TrabatarGUI.Status;
 public class Trabatar
 {
 	// messages displayed to the user
-	private static final String STR_CANT_OPEN = "Can't open destination stream";
-	private static final String STR_WAIT_CAPTURE = "Waiting for mouse capture...";
-	private static final String STR_TRANSMITTING = "Transmitting... (SHIFT 5x to escape)";
-	private static final String STR_ERROR = "Data send failed!";
+	public static final String STR_CANT_OPEN = "Can't open destination stream";
+	public static final String STR_WAIT_CAPTURE = "Click to start...";
+	public static final String STR_TRANSMITTING = "Transmitting... (SHIFT 5x to escape)";
+	public static final String STR_ERROR = "Data send failed!";
+	public static final String STR_NOT_CONNECTED = "Not connected";
 
 	public static void main(String[] args)
 	{
@@ -63,43 +60,7 @@ public class Trabatar
 					"This program must be run in a graphical environment");
 		}
 
-		// read the first argument to get the device the user wants
-		if(args.length < 1)
-		{
-			JOptionPane.showMessageDialog(null,
-				"Please provide an argument pointing to the\n"
-				+ "destination where data will be written.",
-				"Trabatar Error",
-					JOptionPane.WARNING_MESSAGE);
-			System.exit(10);
-		}
-
-		// parse where we should write
-		final String writeDestinationStr = args[0];
-		final Path writeDestination;
-		try
-		{
-			writeDestination = Paths.get(writeDestinationStr);
-		}
-		catch(Exception e)
-		{
-			JOptionPane.showMessageDialog(null,
-					"Write destination couldn't be parsed:\n"
-					+ "\"" + writeDestinationStr + "\"",
-					"Trabatar Error",
-					JOptionPane.WARNING_MESSAGE);
-			System.exit(11);
-			return;
-		}
-
-		// then finally start up
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				new Trabatar(writeDestination);
-			}
-		});
+		SwingUtilities.invokeLater(Trabatar::new);
 	}
 	
 	private final Logger log = LoggerFactory.getLogger(Trabatar.class);
@@ -107,16 +68,13 @@ public class Trabatar
 	private final Robot robot;
 	private final Mouse mouse;
 	private final Keyboard keyboard;
-	private final Path destination;
-	private final OutputStream dout;
 	
+	private volatile Optional<Serial> serial = Optional.empty();
 	private boolean error = false;
 	private boolean active = false;
 	
-	Trabatar(Path destination)
+	Trabatar()
 	{
-		this.destination = Objects.requireNonNull(destination);
-		
 		// initialize the mouse/keyboard interfaces
 		mouse = new Mouse(this);
 		keyboard = new Keyboard(this);
@@ -136,31 +94,14 @@ public class Trabatar
 		// make the GUI
 		gui = new TrabatarGUI(this);
 		gui.addKeyListener(keyboard);
-		
-		// try to open the output system
-		OutputStream doutLocal;
-		try
-		{
-			doutLocal = Files.newOutputStream(destination,
-					StandardOpenOption.WRITE);
-			gui.showMessage(STR_WAIT_CAPTURE, Status.WAITING);
-		}
-		catch(IOException e)
-		{
-			log.warn("unable to open file destination", e);
-			doutLocal = null;
-			gui.showMessage(STR_CANT_OPEN, Status.PROBLEM);
-			error = true;
-		}
-		dout = doutLocal;
-		
+
 		// then start for the user
 		gui.setVisible(true);
 	}
 
 	void commandCapture()
 	{
-		if(error)
+		if(error || ! serial.isPresent())
 		{
 			return;
 		}
@@ -174,13 +115,16 @@ public class Trabatar
 	
 	void commandExit()
 	{
-		try
+		if(serial.isPresent())
 		{
-			dout.close();
-		}
-		catch(Exception e)
-		{
-			log.warn("unable to close write destination", e);
+			try
+			{
+				serial.get().close();
+			}
+			catch(Exception e)
+			{
+				log.warn("unable to close serial port", e);
+			}
 		}
 		
 		System.exit(0);
@@ -192,9 +136,114 @@ public class Trabatar
 		gui.showMessage(STR_WAIT_CAPTURE, Status.WAITING);
 	}
 	
-	Path getDestination()
+	void commandOpen()
 	{
-		return destination;
+		// fetch the serial port options
+		final SerialPort[] ports = SerialPort.getCommPorts();
+
+		// fallback in the event there are no ports to pick from
+		if(ports.length == 0)
+		{
+			log.info("no serial ports detected");
+			JOptionPane.showMessageDialog(gui,
+					"No serial ports were detected.",
+					"Trabatar Error",
+					JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+
+		// make a parallel list of names for the ports
+		final Object[] portNames = Arrays.stream(ports)
+				.map(p ->
+				{
+					return String.format("%s [%s]",
+							p.getDescriptivePortName(),
+							p.getSystemPortName());
+				})
+				.toArray();
+
+		// prompt the user to pick one
+		Object option = JOptionPane.showInputDialog(gui,
+				"Select a communication port to open:",
+				"Trabatar Message",
+				JOptionPane.PLAIN_MESSAGE,
+				null,
+				portNames,
+				portNames[0]);
+		if(option == null)
+		{
+			// user cancelled
+			return;
+		}
+
+		// figure out the one they picked
+		SerialPort portSelected = null;
+		if(option != null)
+		{
+			for(int i = 0; i < portNames.length; i++)
+			{
+				if(option.equals(portNames[i]))
+				{
+					portSelected = ports[i];
+					break;
+				}
+			}
+		}
+		// in case it isn't found, which shouldn't be possible
+		if(portSelected == null)
+		{
+			log.warn("user picked serial port [{}], but it was not found.",
+					option);
+			return;
+		}
+
+		// if serial exists, close it
+		if(serial.isPresent())
+		{
+			try
+			{
+				serial.get().close();
+			}
+			catch(Exception e)
+			{
+				// swallow, but log
+				log.warn("exception during existing port close.", e);
+			}
+		}
+
+		// attempt to open the new port, and report any issues appropriately
+		try
+		{
+			final Serial newSerial = new Serial(portSelected);
+			if(! newSerial.isClosed())
+			{
+				serial = Optional.of(newSerial);
+				JOptionPane.showMessageDialog(gui,
+						"Connection opened!",
+						"Trabatar Message",
+						JOptionPane.INFORMATION_MESSAGE);
+				gui.showMessage(STR_WAIT_CAPTURE, Status.WAITING);
+			}
+			else
+			{
+				serial = Optional.empty();
+				JOptionPane.showMessageDialog(gui,
+						"Unable to open the connection!",
+						"Trabatar Error",
+						JOptionPane.ERROR_MESSAGE);
+				gui.showMessage(STR_NOT_CONNECTED, Status.PROBLEM);
+			}
+		}
+		catch(Exception e)
+		{
+			log.warn("unexpected error during opening process.", e);
+			serial = Optional.empty();
+			JOptionPane.showMessageDialog(gui,
+					"Unexpected error during the opening process.",
+					"Trabatar Error",
+					JOptionPane.ERROR_MESSAGE);
+			gui.showMessage(STR_CANT_OPEN, Status.PROBLEM);
+		}
 	}
 
 	Keyboard getKeyboard()
@@ -223,7 +272,7 @@ public class Trabatar
 
 	void sendData(int v)
 	{
-		if(dout != null)
+		if(serial.isPresent())
 		{
 			if(log.isTraceEnabled())
 			{
@@ -232,11 +281,11 @@ public class Trabatar
 			
 			try
 			{
-				dout.write(v);
+				serial.get().accept(v);
 				gui.showMessage(STR_TRANSMITTING, Status.GOOD);
 				gui.toFront();
 			}
-			catch(IOException e)
+			catch(Exception e)
 			{
 				log.warn("data send failed", e);
 				gui.showMessage(STR_ERROR, Status.PROBLEM);
