@@ -20,14 +20,19 @@ package com.saybur.trabatar;
 
 import java.awt.AWTException;
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Robot;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
+
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +54,53 @@ public class Trabatar
 	private static final String STR_WAIT_CAPTURE = "Waiting for mouse capture...";
 	private static final String STR_TRANSMITTING = "Transmitting... (SHIFT 5x to escape)";
 	private static final String STR_ERROR = "Data send failed!";
+
+	public static void main(String[] args)
+	{
+		if(GraphicsEnvironment.isHeadless())
+		{
+			throw new IllegalStateException(
+					"This program must be run in a graphical environment");
+		}
+
+		// read the first argument to get the device the user wants
+		if(args.length < 1)
+		{
+			JOptionPane.showMessageDialog(null,
+				"Please provide an argument pointing to the\n"
+				+ "destination where data will be written.",
+				"Trabatar Error",
+					JOptionPane.WARNING_MESSAGE);
+			System.exit(10);
+		}
+
+		// parse where we should write
+		final String writeDestinationStr = args[0];
+		final Path writeDestination;
+		try
+		{
+			writeDestination = Paths.get(writeDestinationStr);
+		}
+		catch(Exception e)
+		{
+			JOptionPane.showMessageDialog(null,
+					"Write destination couldn't be parsed:\n"
+					+ "\"" + writeDestinationStr + "\"",
+					"Trabatar Error",
+					JOptionPane.WARNING_MESSAGE);
+			System.exit(11);
+			return;
+		}
+
+		// then finally start up
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				new Trabatar(writeDestination);
+			}
+		});
+	}
 	
 	private final Logger log = LoggerFactory.getLogger(Trabatar.class);
 	private final TrabatarGUI gui;
