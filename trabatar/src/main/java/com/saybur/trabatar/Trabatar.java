@@ -28,8 +28,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.saybur.trabatar.TrabatarGUI.Status;
 
@@ -49,7 +50,7 @@ public class Trabatar
 	private static final String STR_TRANSMITTING = "Transmitting... (SHIFT 5x to escape)";
 	private static final String STR_ERROR = "Data send failed!";
 	
-	private final Logger log;
+	private final Logger log = LoggerFactory.getLogger(Trabatar.class);
 	private final TrabatarGUI gui;
 	private final Robot robot;
 	private final Mouse mouse;
@@ -60,9 +61,8 @@ public class Trabatar
 	private boolean error = false;
 	private boolean active = false;
 	
-	Trabatar(Logger log, Path destination)
+	Trabatar(Path destination)
 	{
-		this.log = Objects.requireNonNull(log);
 		this.destination = Objects.requireNonNull(destination);
 		
 		// initialize the mouse/keyboard interfaces
@@ -77,7 +77,7 @@ public class Trabatar
 		}
 		catch(AWTException e)
 		{
-			log.log(Level.SEVERE, "unable to create the robot", e);
+			log.error("unable to create the robot", e);
 			throw new IllegalStateException(e);
 		}
 		
@@ -95,7 +95,7 @@ public class Trabatar
 		}
 		catch(IOException e)
 		{
-			log.log(Level.WARNING, "unable to open file destination", e);
+			log.warn("unable to open file destination", e);
 			doutLocal = null;
 			gui.showMessage(STR_CANT_OPEN, Status.PROBLEM);
 			error = true;
@@ -128,7 +128,7 @@ public class Trabatar
 		}
 		catch(Exception e)
 		{
-			log.log(Level.WARNING, "unable to close write destination", e);
+			log.warn("unable to close write destination", e);
 		}
 		
 		System.exit(0);
@@ -173,9 +173,9 @@ public class Trabatar
 	{
 		if(dout != null)
 		{
-			if(log.isLoggable(Level.FINE))
+			if(log.isTraceEnabled())
 			{
-				log.fine(Integer.toHexString(v));
+				log.trace(Integer.toHexString(v));
 			}
 			
 			try
@@ -186,7 +186,7 @@ public class Trabatar
 			}
 			catch(IOException e)
 			{
-				log.log(Level.WARNING, "data send failed", e);
+				log.warn("data send failed", e);
 				gui.showMessage(STR_ERROR, Status.PROBLEM);
 			}
 		}

@@ -22,8 +22,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class that manages the keyboard. Also see {@link Keycode} and {@link Keymap}
@@ -37,8 +38,7 @@ public final class Keyboard implements KeyListener
 	private static final int RELEASE_KEY = KeyEvent.VK_SHIFT;
 	private static final int RELEASE_COUNT = 5;
 	
-	private final Logger log =
-			Logger.getLogger(Keyboard.class.getName());
+	private final Logger log = LoggerFactory.getLogger(Keyboard.class);
 	private final Trabatar parent;
 	private final Keymap keymap;
 	
@@ -60,11 +60,11 @@ public final class Keyboard implements KeyListener
 		}
 		
 		Optional<Keycode> key = keymap.get(evt.getKeyCode());
-		if(log.isLoggable(Level.FINE))
+		if(log.isTraceEnabled())
 		{
-			log.fine(String.format("Down: %d (%s)%n",
+			log.trace("Down: {} ({})",
 				evt.getKeyCode(),
-				key.orElse(null)));
+				key.orElse(null));
 		}
 		
 		if(key.isPresent())
@@ -84,11 +84,11 @@ public final class Keyboard implements KeyListener
 		}
 		
 		Optional<Keycode> key = keymap.get(evt.getKeyCode());
-		if(log.isLoggable(Level.FINE))
+		if(log.isTraceEnabled())
 		{
-			log.fine(String.format("Up: %d (%s)%n",
-				evt.getKeyCode(),
-				key.orElse(null)));
+			log.trace("Up: {} ({})",
+					evt.getKeyCode(),
+					key.orElse(null));
 		}
 		
 		if(key.isPresent())

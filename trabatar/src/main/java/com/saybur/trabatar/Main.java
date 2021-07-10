@@ -21,10 +21,12 @@ package com.saybur.trabatar;
 import java.awt.GraphicsEnvironment;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main
 {
@@ -49,8 +51,7 @@ public class Main
 		}
 		
 		// setup the logger
-		final Logger log =
-				Logger.getLogger(Trabatar.class.getName());
+		final Logger log = LoggerFactory.getLogger(Main.class);
 		
 		// parse where we should write
 		final String writeDestinationStr = args[0];
@@ -76,7 +77,7 @@ public class Main
 		{
 			public void run()
 			{
-				new Trabatar(log, writeDestination);
+				new Trabatar(writeDestination);
 			}
 		});
 	}

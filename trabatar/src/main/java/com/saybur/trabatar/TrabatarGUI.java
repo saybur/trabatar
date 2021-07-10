@@ -25,8 +25,6 @@ import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -34,6 +32,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates the GUI for managing user I/O.
@@ -66,8 +67,7 @@ public final class TrabatarGUI extends JFrame
 	private static final Dimension BACKGROUND_SIZE =
 			new Dimension(512, 342);
 	
-	private final Logger log =
-			Logger.getLogger(TrabatarGUI.class.getName());
+	private final Logger log = LoggerFactory.getLogger(TrabatarGUI.class);
 	private final JLabel messageLabel;
 
 	TrabatarGUI(final Trabatar parent)
@@ -88,7 +88,7 @@ public final class TrabatarGUI extends JFrame
 		}
 		catch(Exception e)
 		{
-			log.log(Level.WARNING, "unable to load program icon", e);
+			log.warn("unable to load program icon", e);
 		}
 
 		// register program exit to window close
@@ -115,7 +115,7 @@ public final class TrabatarGUI extends JFrame
 		}
 		catch(Exception e)
 		{
-			log.log(Level.WARNING, "unable to load program background", e);
+			log.warn("unable to load program background", e);
 		}
 		
 		// and the message component
