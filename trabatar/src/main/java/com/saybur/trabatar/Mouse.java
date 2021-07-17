@@ -31,6 +31,7 @@ import java.util.Objects;
  */
 public class Mouse implements MouseListener, MouseMotionListener
 {
+	private static final double DECELERATION_FACTOR = 0.5;
 	private static final int BUTTON_ONE_DOWN = 0x61;
 	private static final int BUTTON_TWO_DOWN = 0x62;
 	private static final int BUTTON_BOTH_DOWN = 0x63;
@@ -171,12 +172,12 @@ public class Mouse implements MouseListener, MouseMotionListener
 	{
 		int base = verticalAxis ? 0xC0 : 0x80;
 		int delta = position - lastPosition;
-		int deltaP = Math.abs(delta);
 		if (delta < 0)
 		{
 			base += NEGATION;
 		}
-		
+
+		int deltaP = (int) Math.ceil(Math.abs(delta) * DECELERATION_FACTOR);
 		int low = deltaP & 0x0F;
 		int high = (deltaP & 0xF0) >> 4;
 		parent.sendData(base + low);
