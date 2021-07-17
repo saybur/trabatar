@@ -26,6 +26,7 @@ package com.saybur.trabatar;
  */
 public enum Keycode
 {
+	KC_POWER(0x7F),
 	KC_ESC(0x35),
 	KC_F1(0x7A),
 	KC_F2(0x78),

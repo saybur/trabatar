@@ -113,8 +113,18 @@ public final class TrabatarGUI extends JFrame
 		fileMenu.add(connectItem);
 		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
+		final JMenuItem sendInterrupt = new JMenuItem("Interrupt");
+		sendInterrupt.addActionListener(evt -> parent.commandSend(
+				Keycode.KC_COMMAND, Keycode.KC_POWER));
+		final JMenuItem sendReset = new JMenuItem("Reset");
+		sendReset.addActionListener(evt -> parent.commandSend(
+				Keycode.KC_COMMAND, Keycode.KC_CONTROL, Keycode.KC_POWER));
+		final JMenu sendMenu = new JMenu("Send...");
+		sendMenu.add(sendInterrupt);
+		sendMenu.add(sendReset);
 		final JMenuBar menuBar = new JMenuBar();
 		menuBar.add(fileMenu);
+		menuBar.add(sendMenu);
 		setJMenuBar(menuBar);
 
 		// make the component that the mouse is trapped within

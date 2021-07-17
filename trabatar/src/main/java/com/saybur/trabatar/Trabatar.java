@@ -23,8 +23,11 @@ import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Robot;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -68,6 +71,7 @@ public class Trabatar
 	private final Robot robot;
 	private final Mouse mouse;
 	private final Keyboard keyboard;
+	private final ExecutorService executor;
 	
 	private volatile Optional<Serial> serial = Optional.empty();
 	private boolean error = false;
@@ -90,6 +94,9 @@ public class Trabatar
 			log.error("unable to create the robot", e);
 			throw new IllegalStateException(e);
 		}
+		
+		// pool for executing keyboard combos
+		executor = Executors.newCachedThreadPool();
 		
 		// make the GUI
 		gui = new TrabatarGUI(this);
@@ -244,6 +251,43 @@ public class Trabatar
 					JOptionPane.ERROR_MESSAGE);
 			gui.showMessage(STR_CANT_OPEN, Status.PROBLEM);
 		}
+	}
+	
+	void commandSend(Keycode... keycodes)
+	{
+		if(keycodes == null) return;
+		if(keycodes.length == 0) return;
+		
+		Runnable r = () ->
+		{
+			try
+			{
+				SwingUtilities.invokeAndWait(() ->
+				{
+					for(int i = 0; i < keycodes.length; i++)
+					{
+						keyboard.press(keycodes[i]);
+					}
+				});
+				Thread.sleep(500);
+				SwingUtilities.invokeAndWait(() ->
+				{
+					for(int i = keycodes.length - 1; i >= 0; i--)
+					{
+						keyboard.release(keycodes[i]);
+					}
+				});
+			}
+			catch (InvocationTargetException e)
+			{
+				log.warn("error invoking keyboard combination", e);
+			}
+			catch (InterruptedException e)
+			{
+				log.warn("interrupted while invoking keyboard combination", e);
+			}
+		};
+		executor.execute(r);
 	}
 
 	Keyboard getKeyboard()

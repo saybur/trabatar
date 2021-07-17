@@ -73,9 +73,7 @@ public final class Keyboard implements KeyListener
 		
 		if(key.isPresent())
 		{
-			int kc = key.get().getCode();
-			parent.sendData(0x40 + (kc & 0x0F));
-			parent.sendData(0x50 + ((kc & 0xF0) >> 4));
+			press(key.get());
 		}
 	}
 
@@ -104,9 +102,7 @@ public final class Keyboard implements KeyListener
 		
 		if(key.isPresent())
 		{
-			int kc = key.get().getCode();
-			parent.sendData(0x40 + (kc & 0x0F));
-			parent.sendData(0x58 + ((kc & 0xF0) >> 4));
+			release(key.get());
 		}
 	}
 
@@ -114,5 +110,41 @@ public final class Keyboard implements KeyListener
 	public void keyTyped(KeyEvent evt)
 	{
 		// ignore this event
+	}
+
+	public void press(Keycode keycode)
+	{
+		if(keycode != Keycode.KC_POWER)
+		{
+			int kc = keycode.getCode();
+			parent.sendData(0x40 + (kc & 0x0F));
+			parent.sendData(0x50 + ((kc & 0xF0) >> 4));
+		}
+		else
+		{
+			for(int i = 0; i < 2; i++)
+			{
+				parent.sendData(0x4F);
+				parent.sendData(0x57);
+			}
+		}
+	}
+
+	public void release(Keycode keycode)
+	{
+		if(keycode != Keycode.KC_POWER)
+		{
+			int kc = keycode.getCode();
+			parent.sendData(0x40 + (kc & 0x0F));
+			parent.sendData(0x58 + ((kc & 0xF0) >> 4));
+		}
+		else
+		{
+			for(int i = 0; i < 2; i++)
+			{
+				parent.sendData(0x4F);
+				parent.sendData(0x67);
+			}
+		}
 	}
 }
