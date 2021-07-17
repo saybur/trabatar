@@ -126,7 +126,8 @@ public enum Keycode
 	KC_NP_MULTIPLY(0x43),
 	KC_NP_DIVIDE(0x4B),
 	KC_NP_EQUALS(0x51),
-	KC_NP_ENTER(0x4C);
+	KC_NP_ENTER(0x4C),
+	KC_NP_PERIOD(0x41);
 	
 	private final int code;
 	

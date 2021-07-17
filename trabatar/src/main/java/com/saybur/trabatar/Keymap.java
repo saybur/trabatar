@@ -135,6 +135,7 @@ public final class Keymap
 		//km.put(KeyEvent.VK_SLASH, Keycode.KC_NP_DIVIDE);
 		//km.put(KeyEvent.VK_EQUALS, Keycode.KC_NP_EQUALS);
 		//km.put(KeyEvent.VK_ENTER, Keycode.KC_NP_ENTER);
+		km.put(KeyEvent.VK_DECIMAL, Keycode.KC_NP_PERIOD);
 	}
 	
 	public Optional<Keycode> get(int vk)
